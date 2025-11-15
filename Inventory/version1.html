@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inventory and Product Pricing Pro — Responsive</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root{--ui-bg:#f8fafc}
+    html,body{height:100%}
+    body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;color:#0f172a;background:var(--ui-bg)}
+    /* Keep a few custom utilities from your original design */
+    .blob-btn{position:relative;padding:.6rem 1rem;border-radius:9999px;border:2px solid transparent;background:transparent;cursor:pointer}
+    .blob-btn__content{position:relative;z-index:2}
+    .page{display:none}
+    .page.active{display:block}
+    /* Responsive modal baseline */
+    .modal{position:fixed;inset:0;background:rgba(2,6,23,0.55);display:none;align-items:center;justify-content:center;padding:1rem;z-index:50}
+    .modal.open{display:flex}
+    .modal-content{width:100%;max-width:40rem;background:white;border-radius:.75rem;overflow:hidden}
+    /* small screen adjustments */
+    @media(min-width:1024px){
+      .nav-desktop{display:flex}
+      .nav-mobile{display:none}
+    }
+    @media(max-width:1023px){
+      .nav-desktop{display:none}
+      .nav-mobile{display:flex}
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+  <!-- Header -->
+  <header class="bg-white border-b shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="bg-blue-600 text-white p-2 rounded-lg"><i data-lucide="layers" class="w-5 h-5"></i></div>
+        <div>
+          <h1 class="text-lg font-semibold">Inventory & Product Pricing Pro</h1>
+          <p class="text-xs text-slate-500">v11.0 — Responsive update</p>
+        </div>
+      </div>
+      <div class="hidden sm:flex items-center gap-4">
+        <div class="text-sm text-slate-600">Moses' Build</div>
+        <button id="openMenuBtn" class="blob-btn px-3 py-1 bg-slate-50">Menu</button>
+      </div>
+      <button id="mobileMenuToggle" class="nav-mobile p-2 bg-white border rounded-lg"><i data-lucide="menu" class="w-5 h-5"></i></button>
+    </div>
+  </header>
+
+  <!-- Navigation (desktop) -->
+  <nav class="nav-desktop bg-white border-b">
+    <div class="max-w-6xl mx-auto px-4 py-2 flex items-center gap-2 justify-center">
+      <button id="nav-sup" class="blob-btn nav-blob" data-target="sup"><span class="blob-btn__content flex items-center gap-2"><i data-lucide="users" class="w-4 h-4"></i> Suppliers</span></button>
+      <button id="nav-inv" class="blob-btn nav-blob" data-target="inv"><span class="blob-btn__content flex items-center gap-2"><i data-lucide="archive" class="w-4 h-4"></i> Inventory</span></button>
+      <button id="nav-calc" class="blob-btn nav-blob" data-target="calc"><span class="blob-btn__content flex items-center gap-2"><i data-lucide="calculator" class="w-4 h-4"></i> Calculator</span></button>
+      <button id="nav-prod-inv" class="blob-btn nav-blob" data-target="prod-inv"><span class="blob-btn__content flex items-center gap-2"><i data-lucide="package-check" class="w-4 h-4"></i> Products</span></button>
+      <button id="nav-disc" class="blob-btn nav-blob" data-target="disc"><span class="blob-btn__content flex items-center gap-2"><i data-lucide="percent" class="w-4 h-4"></i> Discounts</span></button>
+      <button id="nav-ai" class="blob-btn nav-blob" data-target="ai" style="--blob-color:#6366f1;color:#4f46e5"><span class="blob-btn__content flex items-center gap-2"><i data-lucide="sparkles" class="w-4 h-4"></i> AI Assistant</span></button>
+    </div>
+  </nav>
+
+  <!-- Mobile nav bottom bar -->
+  <nav class="nav-mobile fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-transparent z-40">
+    <div class="bg-white shadow-lg rounded-full px-3 py-2 flex items-center gap-2">
+      <button class="blob-btn" data-target="sup"><i data-lucide="users" class="w-5 h-5"></i></button>
+      <button class="blob-btn" data-target="inv"><i data-lucide="archive" class="w-5 h-5"></i></button>
+      <button class="blob-btn" data-target="calc"><i data-lucide="calculator" class="w-5 h-5"></i></button>
+      <button class="blob-btn" data-target="prod-inv"><i data-lucide="package-check" class="w-5 h-5"></i></button>
+      <button class="blob-btn" data-target="ai" style="color:#4f46e5"><i data-lucide="sparkles" class="w-5 h-5"></i></button>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="flex-1 overflow-auto py-6">
+    <div class="max-w-6xl mx-auto px-4">
+      <!-- Calculator Page -->
+      <section id="page-calc" class="page active">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2 space-y-6">
+            <div class="bg-white p-5 rounded-xl shadow">
+              <p class="text-xs text-slate-400 uppercase">Parent Product Details</p>
+              <div class="mt-3 space-y-4">
+                <div>
+                  <label class="text-xs text-slate-600">Product Name</label>
+                  <input id="calcProductName" class="w-full mt-1 p-2.5 rounded-lg border bg-gray-50 text-sm" placeholder="e.g. Custom Leather Wallet">
+                </div>
+                <div>
+                  <label class="text-xs text-slate-600">Description</label>
+                  <textarea id="calcProductDesc" rows="3" class="w-full mt-1 p-2.5 rounded-lg border bg-gray-50 text-sm" placeholder="e.g. Bifold, red thread"></textarea>
+                </div>
+                <div>
+                  <label class="text-xs text-slate-600">Images</label>
+                  <div id="calcImagePreview" class="mt-2 flex flex-wrap gap-2"></div>
+                  <label class="mt-2 inline-flex items-center gap-2 cursor-pointer bg-white border rounded-lg p-2"><input id="calcImageUpload" type="file" class="hidden"> <i data-lucide="upload-cloud" class="w-5 h-5 text-gray-400"></i> Upload</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl shadow">
+              <div class="flex justify-between items-center">
+                <p class="text-xs text-slate-400 uppercase">Product Options (Sizes/Variants)</p>
+                <button id="openOptionModal" class="text-sm text-blue-600">Add Option</button>
+              </div>
+              <div id="calcOptionList" class="mt-4 text-sm text-slate-500">No options added yet.</div>
+            </div>
+          </div>
+
+          <aside class="lg:col-span-1">
+            <div class="bg-white p-5 rounded-xl shadow space-y-4 sticky top-6">
+              <p class="text-xs text-slate-400 uppercase">Actions</p>
+              <p class="text-sm text-slate-500">Build and save your product.</p>
+              <button id="saveProductBtn" class="w-full bg-emerald-600 text-white py-2.5 rounded-lg">Save Product</button>
+              <button id="calcClearBtn" class="w-full text-red-500 mt-2 text-sm">Clear All Calculator Data</button>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl shadow mt-4">
+              <p class="text-xs text-slate-400 uppercase">Quick Calc</p>
+              <div class="mt-2">
+                <div id="quickCalcOperation" class="text-xs text-slate-500 text-right"></div>
+                <input id="quickCalcDisplay" readonly class="w-full text-right p-3 rounded-lg border bg-gray-50 text-2xl font-semibold">
+                <div class="grid grid-cols-4 gap-2 mt-3">
+                  <button class="py-3 rounded-lg bg-slate-100">7</button>
+                  <button class="py-3 rounded-lg bg-slate-100">8</button>
+                  <button class="py-3 rounded-lg bg-slate-100">9</button>
+                  <button class="py-3 rounded-lg bg-blue-600 text-white">/</button>
+                  <button class="py-3 rounded-lg bg-slate-100">4</button>
+                  <button class="py-3 rounded-lg bg-slate-100">5</button>
+                  <button class="py-3 rounded-lg bg-slate-100">6</button>
+                  <button class="py-3 rounded-lg bg-blue-600 text-white">*</button>
+                  <button class="py-3 rounded-lg bg-slate-100">1</button>
+                  <button class="py-3 rounded-lg bg-slate-100">2</button>
+                  <button class="py-3 rounded-lg bg-slate-100">3</button>
+                  <button class="py-3 rounded-lg bg-blue-600 text-white">-</button>
+                  <button class="col-span-2 py-3 rounded-lg bg-slate-100">0</button>
+                  <button class="py-3 rounded-lg bg-slate-100">.</button>
+                  <button class="py-3 rounded-lg bg-blue-600 text-white">=</button>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- Products Page -->
+      <section id="page-prod-inv" class="page p-1">
+        <div class="bg-white p-5 rounded-xl shadow">
+          <div class="flex justify-between items-center">
+            <div>
+              <h2 class="text-lg font-semibold">Saved Products</h2>
+              <p class="text-sm text-slate-500">All your calculated products.</p>
+            </div>
+            <button id="clearProductsBtn" class="text-sm text-red-500">Clear All Products</button>
+          </div>
+          <div id="savedProductsList" class="mt-4 text-sm text-slate-500">No products saved yet.</div>
+        </div>
+      </section>
+
+      <!-- Inventory Page -->
+      <section id="page-inv" class="page p-1">
+        <div class="bg-white p-5 rounded-xl shadow">
+          <div class="flex justify-between items-center">
+            <div>
+              <h2 class="text-lg font-semibold">Material Inventory</h2>
+              <p class="text-sm text-slate-500">Your raw materials and costs.</p>
+            </div>
+            <button id="openInventoryModal" class="bg-indigo-600 text-white px-3 py-2 rounded-lg">Add Material</button>
+          </div>
+          <div id="invList" class="mt-4 text-sm text-slate-500">No materials added yet.</div>
+        </div>
+      </section>
+
+      <!-- Suppliers Page -->
+      <section id="page-sup" class="page p-1">
+        <div class="bg-white p-5 rounded-xl shadow">
+          <div class="flex justify-between items-center">
+            <div>
+              <h2 class="text-lg font-semibold">Suppliers</h2>
+              <p class="text-sm text-slate-500">Your supplier contacts.</p>
+            </div>
+            <button id="openSupplierModal" class="bg-emerald-600 text-white px-3 py-2 rounded-lg">Add Supplier</button>
+          </div>
+          <div id="supList" class="mt-4 text-sm text-slate-500">No suppliers added yet.</div>
+        </div>
+      </section>
+
+      <!-- Discounts Page -->
+      <section id="page-disc" class="page p-1">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-white p-5 rounded-xl shadow">
+            <h3 class="font-semibold">Bulk Order Calculator</h3>
+            <div id="bulkCalculator" class="mt-3 text-sm text-slate-500">Select a product to begin.</div>
+          </div>
+          <div class="bg-white p-5 rounded-xl shadow">
+            <h3 class="font-semibold">Event Sale Calculator</h3>
+            <div id="eventCalculator" class="mt-3 text-sm text-slate-500">Select a product to begin.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- AI Page -->
+      <section id="page-ai" class="page p-1">
+        <div class="bg-white p-4 rounded-xl shadow h-[60vh] flex flex-col">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="bg-indigo-600 text-white p-2 rounded-lg"><i data-lucide="sparkles" class="w-5 h-5"></i></div>
+            <div>
+              <h2 class="text-lg font-semibold">AI Business Assistant</h2>
+              <p class="text-sm text-slate-500">Ask for product descriptions, keywords, and marketing ideas.</p>
+            </div>
+          </div>
+          <div id="aiChatHistoryContainer" class="flex-1 overflow-auto space-y-3 p-2 text-sm text-slate-700">
+            <div class="p-3 bg-slate-100 rounded-lg">Hello, I'm SIRIS, your assistant. Ask me anything.</div>
+          </div>
+          <form id="aiChatForm" class="mt-3 flex gap-2">
+            <input id="aiChatInput" class="flex-1 p-2.5 border rounded-lg" placeholder="Ask your assistant...">
+            <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg">Send</button>
+          </form>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Modals (simplified, IDs preserved) -->
+  <div id="confirmModal" class="modal" aria-hidden>
+    <div class="modal-content">
+      <div class="p-4 border-b flex justify-between items-center"><h3 id="confirmModalTitle">Confirm</h3><button onclick="hideConfirmModal()"><i data-lucide="x" class="w-5 h-5"></i></button></div>
+      <div class="p-4"><p id="confirmModalText">This action cannot be undone.</p></div>
+      <div class="p-4 border-t flex justify-end gap-2"><button onclick="hideConfirmModal()" class="px-4 py-2 rounded-lg">Cancel</button><button id="confirmModalBtn" class="px-4 py-2 rounded-lg bg-red-600 text-white">Yes</button></div>
+    </div>
+  </div>
+
+  <div id="supplierModal" class="modal" aria-hidden>
+    <div class="modal-content">
+      <form id="supForm">
+        <div class="p-4 border-b flex justify-between items-center"><h3 id="supplierModalTitle">Add Supplier</h3><button type="button" onclick="hideSupplierModal()"><i data-lucide="x" class="w-5 h-5"></i></button></div>
+        <div class="p-4 space-y-3">
+          <input type="hidden" id="supEditId">
+          <div><label class="text-xs">Supplier Name</label><input id="supName" class="w-full p-2.5 border rounded-lg"></div>
+          <div><label class="text-xs">Contact</label><input id="supContact" class="w-full p-2.5 border rounded-lg"></div>
+          <div><label class="text-xs">Address</label><input id="supAddress" class="w-full p-2.5 border rounded-lg"></div>
+          <div><label class="text-xs">Description</label><textarea id="supDesc" class="w-full p-2.5 border rounded-lg"></textarea></div>
+        </div>
+        <div class="p-4 border-t flex justify-end gap-2"><button type="button" onclick="hideSupplierModal()" class="px-4 py-2 rounded-lg">Cancel</button><button type="submit" class="px-4 py-2 rounded-lg bg-green-600 text-white">Save</button></div>
+      </form>
+    </div>
+  </div>
+
+  <div id="inventoryModal" class="modal" aria-hidden>
+    <div class="modal-content">
+      <form id="invForm">
+        <div class="p-4 border-b flex justify-between items-center"><h3 id="inventoryModalTitle">Add Material</h3><button type="button" onclick="hideInventoryModal()"><i data-lucide="x" class="w-5 h-5"></i></button></div>
+        <div class="p-4 space-y-3">
+          <input type="hidden" id="invEditId">
+          <div><label class="text-xs">Material Name</label><input id="invItemName" class="w-full p-2.5 border rounded-lg"></div>
+          <div><label class="text-xs">Brand / Supplier</label><select id="invSupplierSelect" class="w-full p-2.5 border rounded-lg"></select></div>
+          <div id="invUnitEntry" style="display:none"></div>
+          <div id="invSizeEntry" style="display:none"></div>
+        </div>
+        <div class="p-4 border-t flex justify-end gap-2"><button type="button" onclick="hideInventoryModal()" class="px-4 py-2 rounded-lg">Cancel</button><button type="submit" class="px-4 py-2 rounded-lg bg-purple-600 text-white">Save</button></div>
+      </form>
+    </div>
+  </div>
+
+  <div id="productOptionModal" class="modal" aria-hidden>
+    <div class="modal-content">
+      <form id="productOptionForm">
+        <div class="p-4 border-b flex justify-between items-center"><h3 id="productOptionModalTitle">Add Product Option</h3><button type="button" onclick="hideProductOptionModal()"><i data-lucide="x" class="w-5 h-5"></i></button></div>
+        <div class="p-4 space-y-3">
+          <input type="hidden" id="productOptionEditIndex">
+          <div><label class="text-xs">Option Name</label><input id="optionName" class="w-full p-2.5 border rounded-lg"></div>
+          <div id="optionCalcListContainer" style="display:none"></div>
+        </div>
+        <div class="p-4 border-t flex justify-end gap-2"><button type="button" onclick="hideProductOptionModal()" class="px-4 py-2 rounded-lg">Cancel</button><button type="submit" class="px-4 py-2 rounded-lg bg-blue-600 text-white">Save</button></div>
+      </form>
+    </div>
+  </div>
+
+  <div id="discountModal" class="modal" aria-hidden>
+    <div class="modal-content">
+      <form id="discountForm">
+        <div class="p-4 border-b flex justify-between items-center"><h3>Manage Discounts</h3><button type="button" onclick="hideDiscountModal()"><i data-lucide="x" class="w-5 h-5"></i></button></div>
+        <div class="p-4"><div id="discountTiersPreviewList" class="space-y-2"></div></div>
+        <div class="p-4 border-t flex justify-end gap-2"><button type="button" onclick="hideDiscountModal()" class="px-4 py-2 rounded-lg">Cancel</button><button type="submit" class="px-4 py-2 rounded-lg bg-green-600 text-white">Save</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- SVG defs (keep for blob effects) -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none"><defs><filter id="goo"><feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"/><feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo"/><feBlend in="SourceGraphic" in2="goo"/></filter></defs></svg>
+
+  <!-- Minimal JS to preserve navigation & modals. Your original app script can be appended below to restore full functionality. -->
+  <script>
+    lucide.createIcons();
+    // basic page switcher (preserves original page IDs)
+    const pages = document.querySelectorAll('.page');
+    function showPage(id){
+      pages.forEach(p=>p.classList.remove('active'));
+      const el = document.getElementById('page-'+id);
+      if(el) el.classList.add('active');
+      // update active nav buttons
+      document.querySelectorAll('[data-target]').forEach(b=>b.classList.toggle('active', b.getAttribute('data-target')===id));
+      // ensure scroll to top of main
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+    document.querySelectorAll('[data-target]').forEach(btn=>btn.addEventListener('click',e=>{showPage(btn.getAttribute('data-target'));}));
+
+    // Mobile menu toggle (simple)
+    document.getElementById('mobileMenuToggle').addEventListener('click', ()=>{document.querySelector('nav.nav-desktop')?.classList.toggle('hidden');});
+
+    // Modal helpers (simple show/hide)
+    function showModal(id){const m=document.getElementById(id); if(m) m.classList.add('open');}
+    function hideModal(id){const m=document.getElementById(id); if(m) m.classList.remove('open');}
+    function hideConfirmModal(){hideModal('confirmModal');}
+    function hideSupplierModal(){hideModal('supplierModal');}
+    function hideInventoryModal(){hideModal('inventoryModal');}
+    function hideProductOptionModal(){hideModal('productOptionModal');}
+    function hideDiscountModal(){hideModal('discountModal');}
+
+    // wire modal open buttons
+    document.getElementById('openSupplierModal')?.addEventListener('click', ()=>showModal('supplierModal'));
+    document.getElementById('openInventoryModal')?.addEventListener('click', ()=>showModal('inventoryModal'));
+    document.getElementById('openOptionModal')?.addEventListener('click', ()=>showModal('productOptionModal'));
+
+    // placeholder save/clear buttons (emit events for your app script)
+    document.getElementById('saveProductBtn')?.addEventListener('click', ()=>{const ev=new Event('saveProduct'); document.dispatchEvent(ev);});
+    document.getElementById('calcClearBtn')?.addEventListener('click', ()=>{const ev=new Event('clearCalculator'); document.dispatchEvent(ev);});
+
+    // Accessibility: close modals on ESC
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open'));}});
+
+    // By default show calculator page
+    showPage('calc');
+  </script>
+
+  <!-- IMPORTANT: To restore full app behavior (Firebase, state, and detailed JS functions), paste your original script block from index.html below this comment. Keeping it here ensures all IDs and event hooks remain unchanged. -->
+
+</body>
+</html>
